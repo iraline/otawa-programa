@@ -1,5 +1,9 @@
 #include <elm/io.h>
 #include <otawa/otawa.h>
+#include <otawa/app/Application.h>
+#include <otawa/cfg/features.h>
+#include <otawa/cfg/CFG.h> //CFGMaker
+#include <otawa/ipet.h>
 
 using namespace elm;
 using namespace otawa;
@@ -7,14 +11,19 @@ using namespace otawa;
 int main(int argc, char **argv) {
   try {
     PropList props;
+    cout << "AAAAAAAAAAAAAAAA "; 
 
+    //Dessa forma ele carrega o programa passado como parametro
     WorkSpace *ws = MANAGER.load(argv[1], props);
-    Address addr = ws->process()->findLabel("main");
-    cout << "main found at " << addr << io::endl;
-    return 0;
+    cout << "bAAAAAAAAAAAAAAAA ";    
+    ipet::WCETComputation comp;
+        cout << "cAAAAAAAAAAAAAAAA ";
+    comp.processWorkSpace(ws);
+        cout << "dAAAAAAAAAAAAAAAA ";
+    cout << "the wcet is " << ipet::WCET(ws) << io::endl;
   }
-  catch(otawa::Exception& e) {
-    cerr << "ERROR: " << e.message() << io::endl;
-    return 1;
+  catch(elm::Exception& e) {
+    cout << "eAAAAAAAAAAAAAAAA ";
+    cout << "ERROR: " << e.message() << '\n';
   }
 }
