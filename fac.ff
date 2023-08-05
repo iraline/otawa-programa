@@ -1,0 +1,6 @@
+checksum "fac.elf" 0x8d49ae6a;
+
+// Function main (fac.c:15)
+loop "main" + 0x28 5 ; // 0x8298 (fac.c:21)
+
+
