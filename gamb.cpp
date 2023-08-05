@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     }
 
     //Lista todas as linhas de saída
-    while (fgets(buffer, sizeof(outputWcet), fp) != nullptr) {
+    while (fgets(outputWcet, sizeof(outputWcet), fp) != nullptr) {
         std::cout << "Saída do comando: " << outputWcet;
     }
 
