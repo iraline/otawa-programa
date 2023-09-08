@@ -1,0 +1,69 @@
+
+<!--
+arch: ISA suportado pelo pipeline. Ex: arch: arm, model:cortexa8, builder:atmel,nxp,
+model: apenas informativo, ajuda a dar uma descricao ao pipeline do modelo
+builder: apenas informativo, ajuda a dar uma descricao ao pipeline do microprocessador
+stages: são os estagios do pipeline e deve estar ordenado na ordem real
+	id?: nao eh obrigatorio. Permite vincular um estagio a uma fila
+	name?: nome de exibicao para o humano.
+	width?: numero de instrucoes processadas em paralelo pelo estagio. Padrao é 1.
+	latency?: latência básica (em ciclo) do estágio para processar tantas instruções quanto sua largura. Padrão é 1
+	type?: Efeito no tempo de execucao
+		fetch: Sempre o primeiro. Busca as instruções na memoria. 
+		lazy: Mais simples, objetivo é gastar tempo na execução da intrução.
+		commit: Ultimo estagio em que as instrucoes saem do pipeline.
+		exec: Mais complexo. Representa o estagio em que a instrucao eh executada.
+			dispatch: dispacha instrucoes para a unidade funcional
+				inst:
+					type: Mascara otawa::Inst
+					fu: fornece a unidade funcional que receberá a instrução
+			fus: unidades funcionais
+				name: Apenas para o humano associar ao dispach
+				width: Número de FU existentes, ou seja, numero de instrucoes que podem ser executadas na FU atual. Padrão é 1.
+				latency: ciclos necessario para que a instrução atravesse a unidade funcional.
+				pipelined: Falso é padrão. FU de ciclo múltiplo não é bloqueada até o final da instrução: a cada ciclo, ela pode aceitar outra instrução.
+queue: recusos do pipeline que armazenam um conjunto de instrução, como buffer,fifo, 
+	name: um identificador
+	size: quantidade maxima de instrucoes que a fila pode conter
+	input: estagio que deposita as instrucoes na fila
+	output: estagio que extrai as instrucoes na fila
+	intern: usado apenas no caso de filas que implementam um buffer de reordenação.
+-->
+<processor class="otawa::hard::Processor">
+	<arch>ARCH</arch>
+	<model>MODEL</model>
+	<builder>BUILDER</builder>
+	<stages> 
+		<stage id="ID">
+			<name>STRING</name>?
+			<width>INT</width>?
+			<latency>INT</latency>?
+			<type>fetch|lazy|commit|exec</type>?
+		</stage>
+		<stage id="IRA">
+			<type>exec</type>
+			<dispatch> 
+				<inst> <type> IS_MEM </type> <fu  ref = "INT" /> </inst> 
+				<inst> <type> IS_CONTROL </type> <fu  ref = "INT" /> </inst > 
+				<inst> <type> IS_INT </type> <fu  ref = "INT" /> </inst> 
+				<inst> <type> IS_FLOAT|IS_DIV </type> <fu  ref = "FDIV" /> </inst > 
+				<inst> <type></type> <fu  ref = "FPU" /></inst> 
+			</dispatch>
+			<fus>
+				<name> STRING </name> 
+				<largura> INT </largura> 
+				<latência> INT </latência> 
+				<pipelined> BOOL </pipelined>
+			</fus>
+		</stage>
+	</stages>
+	<queues> 
+		<queue>
+			<name>STRING</name>?
+			<size>INT</size>
+			<input ref="ID"/>
+			<output ref="ID"/>
+			<intern>  <stage ref="ID"/>+ </intern>?
+		</queue>
+	</qeues>
+</processor>

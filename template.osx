@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<otawa-script
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<!-- Simbolos 
+  ? - 0 ou 1
+  + - 1 ou n
+  * - 0 ou n
+-->
+
+
+<!-- DESCRIPTION: Informacoes direcionadas ao humano -->
+<!--
+  name: Descreve o nome do script para o humano
+  info?: Descreve o script, sua limitação e aplicação
+  path*: Caminhos que são usados para recuperar plug-ins usados no cálculo do WCET. 
+-->
+<name> TEXT </name>
+<info> XHTML </info>
+<path to="PATH"/>
+
+<!-- IDENTIFICATION: Identificadores do hw -->
+<!--
+  arch: ISA do hardware
+  abi?: Application Binary Interface com os valores sendo elf, eabi, linux
+  mach?: Modelo exato do processador que esta sendo usado
+ -->
+<id>
+  <arch>TEXT</arch>
+  <abi>TEXT</abi>
+  <mach>TEXT</mach>
+</id>
+
+<!-- CONFIGURATION?: Listas que o usuario pode ajustar, é uma parametrizacao -->
+<configuration>
+  <item
+    name="TEXT"
+    type="bool|int|string|range|enum"
+    default="TEXT"?
+    label="TEXT"?>
+    <help> <!-- TEXT --> </help>
+</item>
+
+</configuration>
+
+
+<!-- PLATFORM?: Descricao do hardware -->
+<!--
+  PIPELINE? 
+  CACHES? 
+  MEMORY?
+-->
+<platform>
+  <xi:include href="template/pipeline.xml"/>
+  <xi:include href="template/cache.xml"/>
+  <xi:include href="template/memory.xml"/>
+</platform>
+
+
+<!-- SCRIPT: Etapas do calculo executadas -->?
+<!-- 
+config*: 
+  add: yes ou true, o valor será incluido na lista de prioridades
+step+: Invoca um processador de codigo ou exige um recurso. Se uma etapa tiver a tag <config>
+sera aplicada apenas nesse passo e nos 'processors' a partir da etapa que foi chamada
+-->
+<script>
+    <!-- Esse metodo garante que todas as chamadas de funções foram incorporadas-->
+    <step require="otawa::VIRTUALIZED_CFG_FEATURE">
+      <config name="C++PATH" value="TEXT" add="yes|true|no|false"?/>
+    </step>
+    <!-- Analisa o pre-buscador da memoria flash -->
+    <step processor="otawa::lpc2138::CATMAMBuilder"/>
+    <!-- Computa o tempo de execução dos blocos-->
+    <step processor="otawa::lpc2138::ARM7ParamExeGraphBBTime">
+      <config name="otawa::lpc2138::FLASH_MISS" value="56"/>
+    </step>
+    <step require="otawa::ipet::WCET_FEATURE"/>
+</script>
+<!-- -->
+
+</otawa-script>

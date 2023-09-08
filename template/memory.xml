@@ -1,0 +1,33 @@
+<!-- ADDRESS ::= 
+	INT
+	| (<page>INT</page>?</page> <offset>INT</offset>)
+-->
+
+<!--
+name: identificador do espaço de memoria. Apenas para o humano
+address: endereço base da area de memoria
+size: tamanho da area da memoria em bytes
+type: natureza da memoria
+	dram: ram dinamica 
+	spm: ram estatica on-chip
+	rom: memoria apenas leitura
+	io: registro de entrada e saida
+latency: número de ciclos para ler um dado o espaço de memória
+write_latency: número de ciclos para gravar no espaço de memória 
+cached: se o espaço é acessado atraves da cache ou de forma direta
+writable: se o espaço eh gravavel ou não
+-->
+<memory>
+	<banks>
+		<bank>
+			<name>TEXT</name>
+		  	<address>ADDRESS</address>
+		  	<size>INT</size>
+		  	<type>DRAM|SPM|ROM|IO</type>
+		  	<latency>INT</latency>?
+		  	<write_latency>INT</write_latency>?
+			<cached>BOOL</cached>		<!-- default: false -->
+		  	<writable>BOOL</writable>	<!-- default: true -->
+		</bank>
+	</banks>
+</memory>
